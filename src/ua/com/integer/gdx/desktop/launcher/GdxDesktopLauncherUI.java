@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package ua.com.integer.gdx.desktop.launcher;
 
 import java.awt.Toolkit;
@@ -19,6 +35,11 @@ import com.badlogic.gdx.Gdx;
 
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
+/**
+ * Simple UI for GdxDesktopLauncher. You can setup resolution here, apply some plugins, and launch game
+ * 
+ * @author 1nt3g3r
+ */
 public class GdxDesktopLauncherUI extends JDialog {
 	private static final long serialVersionUID = -8044534089121377469L;
 	private static java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -85,12 +106,10 @@ public class GdxDesktopLauncherUI extends JDialog {
 
     private void loadSettings() {
         Settings sets = Settings.getInstance().setSettingsClass(getClass());
-        String resolution = sets.getScreenWidth() + "x" + sets.getScreenHeight();
-        resolutionCombobox.setSelectedItem(resolution);
-
-        scaleCombobox.setSelectedItem(sets.getScale());
-
-        portraitMode.setSelected(sets.isPortraitOrientation());
+        
+        resolutionCombobox.setSelectedItem(sets.getString("resolution", "800x480"));
+        scaleCombobox.setSelectedItem(sets.getString("scale", "1.0"));
+        portraitMode.setSelected(sets.getBoolean("portrait-orientation", false));
     }
 
     private void addLaunchButton() {
@@ -142,12 +161,9 @@ public class GdxDesktopLauncherUI extends JDialog {
 
         private void saveSettings() {
             Settings sets = Settings.getInstance().setSettingsClass(getClass());
-            String[] resolutionItems = resolutionCombobox.getSelectedItem().toString().split("x");
-            sets.setScreenResolution(Integer.parseInt(resolutionItems[0]), Integer.parseInt(resolutionItems[1]));
-
-            sets.setScale(scaleCombobox.getSelectedItem().toString());
-
-            sets.setPortraitOrientaion(portraitMode.isSelected());
+            sets.putString("resolution", resolutionCombobox.getSelectedItem().toString());
+            sets.putString("scale", scaleCombobox.getSelectedItem().toString());
+            sets.putBoolean("portrait-orientation", portraitMode.isSelected());
         }
     }
 
