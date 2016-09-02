@@ -16,7 +16,6 @@
 
 package ua.com.integer.gdx.desktop.launcher;
 
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -42,10 +41,7 @@ import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
  */
 public class GdxDesktopLauncherUI extends JDialog {
 	private static final long serialVersionUID = -8044534089121377469L;
-	private static java.awt.Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private static int screenCenterX = screenSize.width / 2;
-    private static int screenCenterY = screenSize.height / 2;
-
+	
     private GdxDesktopLauncher launcher;
     private boolean launched;
 
@@ -58,7 +54,7 @@ public class GdxDesktopLauncherUI extends JDialog {
         setTitle(launcher.getConfig().title + " Launcher");
         setSize(400, 200);
         setResizable(false);
-        situateOnCenter(this);
+        Util.situateOnCenter(this);
         setVisible(true);
         addWindowListener(new ExitOnCloseListener());
 
@@ -66,16 +62,6 @@ public class GdxDesktopLauncherUI extends JDialog {
         addResolutionPanel();
         addLaunchButton();
         addPlugins();
-    }
-
-    public static void situateOnCenter(JDialog dialog) {
-        int frameWidth = dialog.getSize().width;
-        int frameHeight = dialog.getSize().height;
-
-        int frameX = screenCenterX - frameWidth / 2;
-        int frameY = screenCenterY - frameHeight / 2;
-
-        dialog.setLocation(frameX, frameY);
     }
 
     private void addResolutionPanel() {
@@ -152,19 +138,18 @@ public class GdxDesktopLauncherUI extends JDialog {
                 Gdx.app.exit();
             } else {
                 notifyPluginsAboutClose();
-
-                saveSettings();
-
                 System.exit(0);
             }
-        }
 
-        private void saveSettings() {
-            Settings sets = Settings.getInstance().setSettingsClass(getClass());
-            sets.putString("resolution", resolutionCombobox.getSelectedItem().toString());
-            sets.putString("scale", scaleCombobox.getSelectedItem().toString());
-            sets.putBoolean("portrait-orientation", portraitMode.isSelected());
+            saveSettings();
         }
+    }
+
+    private void saveSettings() {
+    	Settings sets = Settings.getInstance().setSettingsClass(getClass());
+    	sets.putString("resolution", resolutionCombobox.getSelectedItem().toString());
+    	sets.putString("scale", scaleCombobox.getSelectedItem().toString());
+    	sets.putBoolean("portrait-orientation", portraitMode.isSelected());
     }
 
     private void notifyPluginsAboutClose() {
@@ -177,13 +162,15 @@ public class GdxDesktopLauncherUI extends JDialog {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             if (!launched) {
-                launched = true;
+            	saveSettings();
+            	
+            	launched = true;
 
                 String[] resolutionParts = resolutionCombobox.getSelectedItem().toString().split("x");
                 int width = Integer.parseInt(resolutionParts[0]);
                 int height = Integer.parseInt(resolutionParts[1]);
 
-                float scale = Integer.parseInt(scaleCombobox.getSelectedItem().toString());
+                float scale = Float.parseFloat(scaleCombobox.getSelectedItem().toString());
 
                 if (portraitMode.isSelected()) {
                     launcher.resolution(height, width, scale);

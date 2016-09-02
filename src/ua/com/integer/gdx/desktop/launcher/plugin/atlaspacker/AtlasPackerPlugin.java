@@ -14,12 +14,16 @@
  * limitations under the License.
  ******************************************************************************/
 
-package ua.com.integer.gdx.desktop.launcher.plugin;
+package ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker;
 
 import java.io.File;
 import java.io.FilenameFilter;
 
+import javax.swing.JOptionPane;
+
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+
+import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
 /**
  * Simple Atlas Packer plugin. Packs all atlases into your android/assets/atlases folder.
@@ -28,6 +32,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
  */
 public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     private static final String PACK_ALL_ATLASES = "Pack all atlases";
+    private static final String PACK_SELECTED_ATLASES = "Pack selected atlases...";
 
     @Override
     public void onInit() {
@@ -49,21 +54,39 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     @Override
     public String[] getCommands() {
         return new String[] {
-                PACK_ALL_ATLASES
+                PACK_ALL_ATLASES,
+                PACK_SELECTED_ATLASES
         };
     }
 
     @Override
     public void executeCommand(String commandName) {
         if (PACK_ALL_ATLASES.equals(commandName)) {
-        	String[] atlasNames = getAtlases();
-    		for(String name: atlasNames) {
-    			TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
-    		}
+        	packAllAtlases();
+        } else if (PACK_SELECTED_ATLASES.equals(commandName)) {
+        	packSelectedAtlases();
         }
     }
     
-    private String[] getAtlases() {
+    private void packAllAtlases() {
+    	String[] atlasNames = getAtlasNames();
+		for(String name: atlasNames) {
+			packAtlas(name);
+		}
+		JOptionPane.showMessageDialog(null, "All atlases packed");
+    }
+    
+    private void packSelectedAtlases() {
+    	PackSelectedAtlasDialog dialog = new PackSelectedAtlasDialog(this);
+    	dialog.setModal(true);
+    	dialog.setVisible(true);
+    }
+
+	public void packAtlas(String name) {
+		TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
+	}
+    
+    public String[] getAtlasNames() {
 		return new File("../../images").list(new FilenameFilter() {
 			@Override
 			public boolean accept(File file, String name) {
