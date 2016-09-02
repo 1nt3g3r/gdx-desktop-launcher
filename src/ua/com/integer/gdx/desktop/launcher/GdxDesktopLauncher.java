@@ -23,6 +23,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.Array;
 
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
+import ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker.AtlasPackerPlugin;
 
 import javax.swing.SwingUtilities;
 
@@ -59,6 +60,10 @@ public class GdxDesktopLauncher {
     	plugins.add(plugin);
         plugin.onInit();
         return this;
+    }
+    
+    public GdxDesktopLauncher addDefaultPlugins() {
+    	return addPlugin(new AtlasPackerPlugin());
     }
 
     /**
