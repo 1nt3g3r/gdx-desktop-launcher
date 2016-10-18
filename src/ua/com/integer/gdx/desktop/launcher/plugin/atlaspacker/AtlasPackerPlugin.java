@@ -18,6 +18,7 @@ package ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
@@ -32,7 +33,7 @@ import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
  */
 public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     private static final String PACK_ALL_ATLASES = "Pack all atlases";
-    private static final String PACK_SELECTED_ATLASES = "Pack selected atlases...";
+    private static final String PACK_SELECTED_ATLASES = "Setup And Pack selected atlases...";
 
     @Override
     public void onInit() {
@@ -78,20 +79,30 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     
     private void packSelectedAtlases() {
     	PackSelectedAtlasDialog dialog = new PackSelectedAtlasDialog(this);
-    	dialog.setModal(true);
     	dialog.setVisible(true);
     }
 
 	public void packAtlas(String name) {
 		TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
 	}
+
+    public String getAtlasFolderPath(String atlasName) {
+        return "../../images/" + atlasName;
+    }
     
     public String[] getAtlasNames() {
-		return new File("../../images").list(new FilenameFilter() {
+        File[] result = new File("../../images").listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File file, String name) {
 				return file.isDirectory();
 			}
 		});
+        Arrays.sort(result);
+
+        String[] toReturn = new String[result.length];
+        for(int i = 0; i < toReturn.length; i++) {
+            toReturn[i] = result[i].getName();
+        }
+        return toReturn;
 	};
 }

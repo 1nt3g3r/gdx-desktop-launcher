@@ -51,7 +51,11 @@ public class GdxDesktopLauncherUI extends JDialog {
     public GdxDesktopLauncherUI(GdxDesktopLauncher launcher) {
         this.launcher = launcher;
 
-        setTitle(launcher.getConfig().title + " Launcher");
+        String launcherName = launcher.getConfig().title;
+        if (launcherName == null) {
+            launcherName = "";
+        }
+        setTitle(launcherName + " Launcher");
         setSize(400, 200);
         setResizable(false);
         Util.situateOnCenter(this);
