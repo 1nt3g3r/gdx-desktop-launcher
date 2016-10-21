@@ -22,6 +22,9 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.utils.Array;
 
+import java.io.File;
+import java.io.IOException;
+
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 import ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker.AtlasPackerPlugin;
 
@@ -79,6 +82,15 @@ public class GdxDesktopLauncher {
     }
 
     /**
+     * Should game launch in full screen
+     * @param fullScreen
+     */
+    public GdxDesktopLauncher fullScreen(boolean fullScreen) {
+        config.fullscreen = fullScreen;
+        return this;
+    }
+
+    /**
      * Set window title
      */
     public GdxDesktopLauncher title(String title) {
@@ -88,14 +100,31 @@ public class GdxDesktopLauncher {
 
     /**
      * Show UI window, where you can setup launcher parameters, use plugins, and run game.
+     *
+     * If launcher launches under IDE, it will just launch game
      */
     public void showUI() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GdxDesktopLauncherUI(GdxDesktopLauncher.this);
+        boolean runUnderIDE = false;
+
+        try {
+            String fullPath = new File(".").getCanonicalPath();
+            if (fullPath.endsWith("android/assets")) {
+                runUnderIDE = true;
             }
-        });
+        } catch ( Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (runUnderIDE) {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new GdxDesktopLauncherUI(GdxDesktopLauncher.this);
+                }
+            });
+        } else {
+            launch();
+        }
     }
 
     /**

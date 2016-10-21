@@ -4,10 +4,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -18,6 +21,7 @@ import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -62,8 +66,11 @@ public class AtlasPropertiesPanel extends JDialog {
 	private File atlasFolder;
 	private TexturePacker.Settings settings;
 
-	public AtlasPropertiesPanel(File atlasFolder) {
+	private AtlasPackerPlugin atlasPacker;
+
+	public AtlasPropertiesPanel(AtlasPackerPlugin atlasPacker, File atlasFolder) {
 		this.atlasFolder = atlasFolder;
+		this.atlasPacker = atlasPacker;
 
 		setTitle("<" + atlasFolder.getName() + "> Atlas Properties");
 
@@ -75,7 +82,7 @@ public class AtlasPropertiesPanel extends JDialog {
 		add(scroll, BorderLayout.CENTER);
 		
 		title("OUTPUT FORMAT");
-		outputFormat = addComboboxControl("File Format:", "png", "jpg");
+		outputFormat = addComboboxControl("File Format:", "png", "jpg", "etc1");
 		format = addComboboxControl("Format:", TEXTURE_FORMAT);
 		jpegQuality = addSpinnerControl("JPEG Quality:", false);
 		filterMin = addComboboxControl("Filter Min:", TEXTURE_FILTERS);
@@ -120,7 +127,9 @@ public class AtlasPropertiesPanel extends JDialog {
 		stripWhiteSpaceY = addCheckboxControl("Strip Whitespace Y");
 		alias = addCheckboxControl("Alias");
 		ignoreBlankImages = addCheckboxControl("Ignore Blank Images");
-		
+
+		addPackAtlasButton();
+
 		content.add(Box.createVerticalGlue());
 
 		loadAtlasSettings();
@@ -130,6 +139,21 @@ public class AtlasPropertiesPanel extends JDialog {
 		Util.situateOnCenter(this);
 		addWindowListener(new SettingsPanelCloseListener());
 		setModal(true);
+	}
+
+	private void addPackAtlasButton() {
+		JButton packAtlasButton = new JButton("Pack atlas");
+		packAtlasButton.setBackground(Color.GREEN);
+		packAtlasButton.addActionListener(new PackAtlasListener());
+		wrap(size(packAtlasButton, 200, 25));
+	}
+
+	class PackAtlasListener implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			saveAtlasSettings();
+			atlasPacker.packAtlas(atlasFolder.getName());
+		}
 	}
 
 	private void loadAtlasSettings() {
@@ -295,6 +319,6 @@ public class AtlasPropertiesPanel extends JDialog {
 	}
 
 	public static void main(String[] args) {
-		new AtlasPropertiesPanel(new File("/home/integer"));
+		new AtlasPropertiesPanel(null, new File("/home/integer"));
 	}
 }

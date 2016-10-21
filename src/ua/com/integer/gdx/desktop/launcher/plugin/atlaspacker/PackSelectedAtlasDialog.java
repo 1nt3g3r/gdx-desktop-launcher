@@ -78,7 +78,7 @@ public class PackSelectedAtlasDialog extends JDialog {
 				JOptionPane.showMessageDialog(null, "Select atlas");
 			} else {
 				String path = atlasPacker.getAtlasFolderPath(atlasNamesList.getSelectedValue());
-				new AtlasPropertiesPanel(new File(path));
+				new AtlasPropertiesPanel(atlasPacker, new File(path));
 			}
 		}
 	}

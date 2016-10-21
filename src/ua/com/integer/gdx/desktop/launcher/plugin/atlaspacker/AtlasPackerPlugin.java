@@ -17,12 +17,20 @@
 package ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.util.Arrays;
 
 import javax.swing.JOptionPane;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.glutils.ETC1;
+import com.badlogic.gdx.tools.etc1.ETC1Compressor;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.Json;
 
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
@@ -83,7 +91,31 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     }
 
 	public void packAtlas(String name) {
-		TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
+        TexturePacker.Settings settings = null;
+        try {
+            settings = new Json().fromJson(TexturePacker.Settings.class, new FileInputStream(new File(getAtlasFolderPath(name), "pack.json")));
+        } catch (FileNotFoundException e) {
+            settings = new TexturePacker.Settings();
+        }
+
+        if (settings.outputFormat.equals("etc1")) {
+            new File("./atlases/" + name + ".etc1").delete();
+
+            TexturePacker.process(settings, "../../images/" + name, "./atlases", name + ".atlas");
+            GdxNativesLoader.load();
+
+            Pixmap pixmap = new Pixmap(new FileHandle("./atlases/" + name + ".etc1"));
+            if (pixmap.getFormat() != Pixmap.Format.RGB888 && pixmap.getFormat() != Pixmap.Format.RGB565) {
+                Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGB888);
+                tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+                pixmap.dispose();
+                pixmap = tmp;
+            }
+            ETC1.encodeImagePKM(pixmap).write(new FileHandle(new File("./atlases/" + name + ".etc1")));
+            pixmap.dispose();
+        } else {
+            TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
+        }
 	}
 
     public String getAtlasFolderPath(String atlasName) {
