@@ -27,6 +27,8 @@ import java.io.IOException;
 
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 import ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker.AtlasPackerPlugin;
+import ua.com.integer.gdx.desktop.launcher.plugin.iconizer.IconizerPlugin;
+import ua.com.integer.gdx.desktop.launcher.plugin.screenshoter.ScreenshoterPlugin;
 
 import javax.swing.SwingUtilities;
 
@@ -66,7 +68,9 @@ public class GdxDesktopLauncher {
     }
     
     public GdxDesktopLauncher addDefaultPlugins() {
-    	return addPlugin(new AtlasPackerPlugin());
+    	return  addPlugin(new AtlasPackerPlugin()).
+                addPlugin(new ScreenshoterPlugin()).
+                addPlugin(new IconizerPlugin());
     }
 
     /**
