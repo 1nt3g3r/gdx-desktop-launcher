@@ -157,6 +157,7 @@ public class AtlasPropertiesPanel extends JDialog {
 	}
 
 	private void loadAtlasSettings() {
+		boolean needSaveSettings = false;
 		if (isSettingsFileExists()) {
 			try {
 				settings = new Json().fromJson(TexturePacker.Settings.class, new FileInputStream(new File(atlasFolder, "pack.json")));
@@ -165,7 +166,7 @@ public class AtlasPropertiesPanel extends JDialog {
 			}
 		} else {
 			settings = new TexturePacker.Settings();
-			saveAtlasSettings();
+			needSaveSettings = true;
 		}
 
 		pot.setSelected(settings.pot);
@@ -201,6 +202,10 @@ public class AtlasPropertiesPanel extends JDialog {
 		limitMemory.setSelected(settings.limitMemory);
 		grid.setSelected(settings.grid);
 		scale.setValue(settings.scale[0]);
+
+		if (needSaveSettings) {
+			saveAtlasSettings();
+		}
 	}
 
 	private boolean isSettingsFileExists() {

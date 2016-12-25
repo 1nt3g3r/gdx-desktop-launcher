@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 import ua.com.integer.gdx.desktop.launcher.plugin.atlaspacker.AtlasPackerPlugin;
+import ua.com.integer.gdx.desktop.launcher.plugin.hiero.LaunchHieroPlugin;
 import ua.com.integer.gdx.desktop.launcher.plugin.iconizer.IconizerPlugin;
 import ua.com.integer.gdx.desktop.launcher.plugin.screenshoter.ScreenshoterPlugin;
 
@@ -66,11 +67,15 @@ public class GdxDesktopLauncher {
         plugin.onInit();
         return this;
     }
-    
+
+    /**
+     * Add default plugins
+     */
     public GdxDesktopLauncher addDefaultPlugins() {
     	return  addPlugin(new AtlasPackerPlugin()).
                 addPlugin(new ScreenshoterPlugin()).
-                addPlugin(new IconizerPlugin());
+                addPlugin(new IconizerPlugin()).
+                addPlugin(new LaunchHieroPlugin());
     }
 
     /**
