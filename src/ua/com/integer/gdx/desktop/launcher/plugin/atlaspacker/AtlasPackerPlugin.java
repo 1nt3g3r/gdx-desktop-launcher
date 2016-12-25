@@ -27,11 +27,13 @@ import javax.swing.JOptionPane;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.glutils.ETC1;
-import com.badlogic.gdx.tools.etc1.ETC1Compressor;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.StringBuilder;
 
+import ua.com.integer.gdx.desktop.launcher.Settings;
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
 /**
@@ -42,9 +44,50 @@ import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     private static final String PACK_ALL_ATLASES = "Pack all atlases";
     private static final String PACK_SELECTED_ATLASES = "Setup And Pack selected atlases...";
+    private static final String SETTINGS = "Settings";
 
     @Override
     public void onInit() {
+        if (sets().getBoolean("autocheck", true)) {
+            Array<String> changedAtlases = getListOfChangedAtlases();
+            if (changedAtlases.size > 0) {
+                askForRepackChangedAtlases(changedAtlases);
+            }
+        }
+    }
+
+    private Array<String> getListOfChangedAtlases() {
+        Array<String> result = new Array<>();
+        for(String atlasName : getAtlasNames()) {
+            File atlasFolder = getAtlasFile(atlasName);
+            if (ChecksumChecker.isFileChanged(atlasFolder)) {
+                result.add(atlasName);
+            }
+        }
+        return result;
+    }
+
+    private void askForRepackChangedAtlases(Array<String> changedAtlases) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("These atlases were changed from last launch:\n\n");
+
+        for(int i = 0; i < changedAtlases.size; i++) {
+            String atlasName = changedAtlases.get(i);
+            strBuilder.append(atlasName);
+            if (i < changedAtlases.size - 1) {
+                strBuilder.append(", ");
+            }
+        }
+
+        strBuilder.append("\n\nRepack these atlases?");
+
+        int askResult = JOptionPane.showConfirmDialog(null, strBuilder.toString(), "Repack Atlases", JOptionPane.YES_NO_OPTION);
+        if (askResult == JOptionPane.YES_OPTION) {
+            for(String atlasName : changedAtlases) {
+                packAtlas(atlasName);
+            }
+            JOptionPane.showMessageDialog(null, "Atlases repacked!");
+        }
     }
 
     @Override
@@ -64,7 +107,8 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     public String[] getCommands() {
         return new String[] {
                 PACK_ALL_ATLASES,
-                PACK_SELECTED_ATLASES
+                PACK_SELECTED_ATLASES,
+                SETTINGS
         };
     }
 
@@ -74,6 +118,8 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
         	packAllAtlases();
         } else if (PACK_SELECTED_ATLASES.equals(commandName)) {
         	packSelectedAtlases();
+        } else if (SETTINGS.equals(commandName)) {
+            showSettingsDialog();
         }
     }
     
@@ -88,6 +134,11 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
     private void packSelectedAtlases() {
     	PackSelectedAtlasDialog dialog = new PackSelectedAtlasDialog(this);
     	dialog.setVisible(true);
+    }
+
+    private void showSettingsDialog() {
+        AtlasPackerSettingsDialog dialog = new AtlasPackerSettingsDialog(this);
+        dialog.setVisible(true);
     }
 
 	public void packAtlas(String name) {
@@ -116,7 +167,13 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
         } else {
             TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
         }
+
+        ChecksumChecker.saveFileChecksum(getAtlasFile(name));
 	}
+
+    private File getAtlasFile(String atlasName) {
+        return new File(getAtlasFolderPath(atlasName));
+    }
 
     public String getAtlasFolderPath(String atlasName) {
         return "../../images/" + atlasName;
@@ -136,5 +193,9 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
             toReturn[i] = result[i].getName();
         }
         return toReturn;
-	};
+	}
+
+    private Settings sets() {
+        return Settings.getInstance().setSettingsClass(AtlasPackerPlugin.class);
+    }
 }
