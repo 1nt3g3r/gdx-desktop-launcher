@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.compression.CRC;
 
 import java.io.File;
 
+import ua.com.integer.gdx.desktop.launcher.GdxDesktopLauncher;
 import ua.com.integer.gdx.desktop.launcher.Settings;
 
 public class ChecksumChecker {
@@ -40,6 +41,6 @@ public class ChecksumChecker {
     }
 
     private static Settings sets() {
-        return Settings.getInstance().setSettingsClass(ChecksumChecker.class);
+        return Settings.getInstance().setSettingsClass(GdxDesktopLauncher.getInstance().getApplicationListener().getClass());
     }
 }

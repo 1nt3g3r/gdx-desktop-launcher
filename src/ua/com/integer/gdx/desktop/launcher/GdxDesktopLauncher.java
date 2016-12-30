@@ -47,16 +47,22 @@ public class GdxDesktopLauncher {
 
     private Array<GdxDesktopLauncherPlugin> plugins = new Array<GdxDesktopLauncherPlugin>();
 
+    private static GdxDesktopLauncher instance;
+
     private GdxDesktopLauncher() {
 	}
-    
+
+    public static GdxDesktopLauncher getInstance() {
+        return instance;
+    }
+
     /**
      * Entry point.
      */
     public static GdxDesktopLauncher with(ApplicationListener listener) {
-        GdxDesktopLauncher launcher = new GdxDesktopLauncher();
-        launcher.applicationListener = listener;
-        return launcher;
+        instance = new GdxDesktopLauncher();
+        instance.applicationListener = listener;
+        return instance;
     }
 
     /**

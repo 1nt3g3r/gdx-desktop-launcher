@@ -95,7 +95,7 @@ public class GdxDesktopLauncherUI extends JDialog {
     }
 
     private void loadSettings() {
-        Settings sets = Settings.getInstance().setSettingsClass(getClass());
+        Settings sets = Settings.getInstance().setSettingsClass(GdxDesktopLauncher.getInstance().getApplicationListener().getClass());
         
         resolutionCombobox.setSelectedItem(sets.getString("resolution", "800x480"));
         scaleCombobox.setSelectedItem(sets.getString("scale", "1.0"));
@@ -150,7 +150,7 @@ public class GdxDesktopLauncherUI extends JDialog {
     }
 
     private void saveSettings() {
-    	Settings sets = Settings.getInstance().setSettingsClass(getClass());
+    	Settings sets = Settings.getInstance().setSettingsClass(GdxDesktopLauncher.getInstance().getApplicationListener().getClass());
     	sets.putString("resolution", resolutionCombobox.getSelectedItem().toString());
     	sets.putString("scale", scaleCombobox.getSelectedItem().toString());
     	sets.putBoolean("portrait-orientation", portraitMode.isSelected());
