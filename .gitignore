@@ -10,5 +10,9 @@ build
 #Gradle specific
 .gradle
 
+#IntelliJ
+*.iml
+
 #Machine-specific
 pull.sh
+push.sh
