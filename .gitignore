@@ -9,3 +9,6 @@ build
 
 #Gradle specific
 .gradle
+
+#Machine-specific
+pull.sh

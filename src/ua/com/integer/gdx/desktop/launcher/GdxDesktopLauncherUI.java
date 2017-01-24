@@ -74,6 +74,7 @@ public class GdxDesktopLauncherUI extends JDialog {
         add(resolutionLabel);
 
         resolutionCombobox = new JComboBox<String>(new String[] {"2048x1536", "1280x800", "1024x768", "1024x600", "1136x640", "960x540", "800x480", "640x480" });
+        resolutionCombobox.setFocusable(false);
         resolutionCombobox.setSelectedIndex(6);
         resolutionCombobox.setBounds(105, 25, 100, 25);
         add(resolutionCombobox);
@@ -83,11 +84,13 @@ public class GdxDesktopLauncherUI extends JDialog {
         add(scaleLabel);
 
         scaleCombobox = new JComboBox<String>(new String[] {"2", "1.5", "1", "0.9", "0.8", "0.7", "0.6", "0.5"});
+        scaleCombobox.setFocusable(false);
         scaleCombobox.setSelectedIndex(2);
         scaleCombobox.setBounds(270, 25, 100, 25);
         add(scaleCombobox);
 
         portraitMode = new JCheckBox("Portrait orientation");
+        portraitMode.setFocusable(false);
         portraitMode.setBounds(5, 55, 300, 25);
         add(portraitMode);
 
@@ -104,6 +107,7 @@ public class GdxDesktopLauncherUI extends JDialog {
 
     private void addLaunchButton() {
         JButton launchButton = new JButton("Launch");
+        launchButton.setFocusable(false);
         launchButton.addActionListener(new LaunchListener());
         launchButton.setBounds(290, 120, 100, 25);
         add(launchButton);
