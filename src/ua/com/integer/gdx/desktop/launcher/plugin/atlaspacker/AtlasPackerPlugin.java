@@ -186,6 +186,10 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
 				return file.isDirectory();
 			}
 		});
+        if (result == null) {
+            return new String[]{};
+        }
+
         Arrays.sort(result);
 
         String[] toReturn = new String[result.length];
