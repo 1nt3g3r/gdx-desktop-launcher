@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,6 +15,7 @@ import java.util.GregorianCalendar;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import ua.com.integer.gdx.desktop.launcher.GdxDesktopLauncher;
 import ua.com.integer.gdx.desktop.launcher.Settings;
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
@@ -27,7 +30,14 @@ public class ScreenshoterPlugin implements GdxDesktopLauncherPlugin {
 
     @Override
     public void onLaunch() {
-
+        GdxDesktopLauncher.getInstance().getUi().addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    makeScreenshot();
+                }
+            }
+        });
     }
 
     @Override

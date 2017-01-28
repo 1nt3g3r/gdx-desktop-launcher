@@ -47,6 +47,8 @@ public class GdxDesktopLauncher {
 
     private Array<GdxDesktopLauncherPlugin> plugins = new Array<GdxDesktopLauncherPlugin>();
 
+    private GdxDesktopLauncherUI ui;
+
     private static GdxDesktopLauncher instance;
 
     private GdxDesktopLauncher() {
@@ -72,6 +74,10 @@ public class GdxDesktopLauncher {
     	plugins.add(plugin);
         plugin.onInit();
         return this;
+    }
+
+    public GdxDesktopLauncherUI getUi() {
+        return ui;
     }
 
     /**
@@ -134,7 +140,7 @@ public class GdxDesktopLauncher {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new GdxDesktopLauncherUI(GdxDesktopLauncher.this);
+                    ui = new GdxDesktopLauncherUI(GdxDesktopLauncher.this);
                 }
             });
         } else {
@@ -150,7 +156,8 @@ public class GdxDesktopLauncher {
             plugins.get(i).onLaunch();
         }
 
-        new LwjglApplication(applicationListener, config).addLifecycleListener(new LifecycleListener() {
+        LwjglApplication app = new LwjglApplication(applicationListener, config);
+        app.addLifecycleListener(new LifecycleListener() {
             @Override
             public void pause() {}
             @Override
