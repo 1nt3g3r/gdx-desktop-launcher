@@ -150,20 +150,43 @@ public class AtlasPackerPlugin implements GdxDesktopLauncherPlugin {
         }
 
         if (settings.outputFormat.equals("etc1")) {
+
             new File("./atlases/" + name + ".etc1").delete();
+            for(int i = 2; i <= 10; i++) {
+                new File("./atlases/" + name + i + ".etc1").delete();
+            }
 
             TexturePacker.process(settings, "../../images/" + name, "./atlases", name + ".atlas");
+
             GdxNativesLoader.load();
 
-            Pixmap pixmap = new Pixmap(new FileHandle("./atlases/" + name + ".etc1"));
-            if (pixmap.getFormat() != Pixmap.Format.RGB888 && pixmap.getFormat() != Pixmap.Format.RGB565) {
-                Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGB888);
-                tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+            {
+                Pixmap pixmap = new Pixmap(new FileHandle("./atlases/" + name + ".etc1"));
+                if (pixmap.getFormat() != Pixmap.Format.RGB888 && pixmap.getFormat() != Pixmap.Format.RGB565) {
+                    Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGB888);
+                    tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+                    pixmap.dispose();
+                    pixmap = tmp;
+                }
+                ETC1.encodeImagePKM(pixmap).write(new FileHandle(new File("./atlases/" + name + ".etc1")));
                 pixmap.dispose();
-                pixmap = tmp;
             }
-            ETC1.encodeImagePKM(pixmap).write(new FileHandle(new File("./atlases/" + name + ".etc1")));
-            pixmap.dispose();
+
+            for(int i = 2; i <= 10; i++) {
+                FileHandle atlasHandle = new FileHandle("./atlases/" + name + i + ".etc1");
+                if (!atlasHandle.exists()) {
+                    break;
+                }
+                Pixmap pixmap = new Pixmap(atlasHandle);
+                if (pixmap.getFormat() != Pixmap.Format.RGB888 && pixmap.getFormat() != Pixmap.Format.RGB565) {
+                    Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), Pixmap.Format.RGB888);
+                    tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
+                    pixmap.dispose();
+                    pixmap = tmp;
+                }
+                ETC1.encodeImagePKM(pixmap).write(new FileHandle(new File("./atlases/" + name + i + ".etc1")));
+                pixmap.dispose();
+            }
         } else {
             TexturePacker.process("../../images/" + name, "./atlases", name + ".atlas");
         }
