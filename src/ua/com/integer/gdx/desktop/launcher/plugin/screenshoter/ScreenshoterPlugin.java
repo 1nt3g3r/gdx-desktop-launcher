@@ -30,6 +30,10 @@ public class ScreenshoterPlugin implements GdxDesktopLauncherPlugin {
 
     @Override
     public void onLaunch() {
+        if (GdxDesktopLauncher.getInstance() == null || GdxDesktopLauncher.getInstance().getUi() == null) {
+            return;
+        }
+
         GdxDesktopLauncher.getInstance().getUi().addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

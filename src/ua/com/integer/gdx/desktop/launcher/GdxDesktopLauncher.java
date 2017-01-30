@@ -144,7 +144,7 @@ public class GdxDesktopLauncher {
                 }
             });
         } else {
-            launch();
+            new StandaloneLauncher(this);
         }
     }
 

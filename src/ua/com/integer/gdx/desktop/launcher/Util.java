@@ -3,6 +3,7 @@ package ua.com.integer.gdx.desktop.launcher;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 
 public class Util {
@@ -18,5 +19,14 @@ public class Util {
 		int frameY = screenCenterY - frameHeight / 2;
 
 		dialog.setLocation(frameX, frameY);
+	}
+
+	public static JComponent size(JComponent component, int width, int height) {
+		Dimension size = new Dimension(width, height);
+		component.setSize(size);
+		component.setMinimumSize(size);
+		component.setMaximumSize(size);
+		component.setPreferredSize(size);
+		return component;
 	}
 }
