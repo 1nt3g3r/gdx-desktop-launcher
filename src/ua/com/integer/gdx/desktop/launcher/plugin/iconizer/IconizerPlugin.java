@@ -7,7 +7,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
+import ua.com.integer.gdx.desktop.launcher.GdxDesktopLauncher;
 import ua.com.integer.gdx.desktop.launcher.Settings;
 import ua.com.integer.gdx.desktop.launcher.plugin.GdxDesktopLauncherPlugin;
 
@@ -71,6 +73,8 @@ public class IconizerPlugin implements GdxDesktopLauncherPlugin {
         copy("icon-mdpi.png", "drawable-mdpi");
         copy("icon-xhdpi.png", "drawable-xhdpi");
         copy("icon-xxhdpi.png", "drawable-xxhdpi");
+
+        JOptionPane.showMessageDialog(null, "Finished");
     }
 
     private void copy(String source, String destination) {
@@ -103,7 +107,7 @@ public class IconizerPlugin implements GdxDesktopLauncherPlugin {
 
     }
     private Settings sets() {
-        return Settings.getInstance().setSettingsClass(IconizerPlugin.class);
+        return Settings.getInstance().setSettingsClass(GdxDesktopLauncher.getInstance().getApplicationListener().getClass());
     }
     private File getSourceFolder() {
         return new File(sets().getString("source.path", "."));
