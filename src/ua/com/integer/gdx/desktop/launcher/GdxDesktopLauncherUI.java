@@ -83,7 +83,7 @@ public class GdxDesktopLauncherUI extends JDialog {
         scaleLabel.setBounds(215, 25, 50, 25);
         add(scaleLabel);
 
-        scaleCombobox = new JComboBox<String>(new String[] {"2", "1.5", "1", "0.9", "0.8", "0.7", "0.6", "0.5"});
+        scaleCombobox = new JComboBox<String>(new String[] {"2", "1.5", "1", "0.9", "0.8", "0.7", "0.6", "0.5", "0.4", "0.3", "0.2"});
         scaleCombobox.setFocusable(false);
         scaleCombobox.setSelectedIndex(2);
         scaleCombobox.setBounds(270, 25, 100, 25);
